@@ -157,6 +157,20 @@ export const panicBecauseOfInfiniteLoop: ActionFunction<
   )
 }
 
+export const trackRequestedQueryRun = assign<IBuildContext, AnyEventObject>({
+  pendingQueryRuns: (context, { payload }) => {
+    const pendingQueryRuns = context.pendingQueryRuns || new Set<string>()
+    if (payload?.payload?.path) {
+      pendingQueryRuns.add(payload.payload.path)
+    }
+    return pendingQueryRuns
+  },
+})
+
+export const clearPendingQueryRuns = assign<IBuildContext>({
+  pendingQueryRuns: new Set<string>(),
+})
+
 export const buildActions: ActionFunctionMap<IBuildContext, AnyEventObject> = {
   callApi,
   markNodesDirty,
@@ -180,4 +194,6 @@ export const buildActions: ActionFunctionMap<IBuildContext, AnyEventObject> = {
   setQueryRunningFinished,
   panic,
   logError,
+  trackRequestedQueryRun,
+  clearPendingQueryRuns,
 }
